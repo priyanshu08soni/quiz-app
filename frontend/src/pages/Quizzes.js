@@ -12,7 +12,7 @@ const Quizzes = () => {
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const response = await fetch("https://quiz-app-omega-three-83.vercel.app/quizzes");
+        const response = await fetch("https://quiz-app-imh9.onrender.com/quizzes");
         if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
         const data = await response.json();
 

@@ -15,7 +15,7 @@ const Dashboard = () => {
         return;
       }
       try {
-        const response = await fetch(`https://quiz-app-omega-three-83.vercel.app/quizzes/quiz-attempts/${userId}`);
+        const response = await fetch(`https://quiz-app-imh9.onrender.com/quizzes/quiz-attempts/${userId}`);
         const data = await response.json();
         setAttempts(data.attempts);
       } catch (error) {

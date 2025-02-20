@@ -26,7 +26,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch(`https://quiz-app-omega-three-83.vercel.app/auth/login`, {
+      const response = await fetch(`https://quiz-app-imh9.onrender.com/auth/login`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'

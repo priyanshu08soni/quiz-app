@@ -29,7 +29,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch(`https://quiz-app-omega-three-83.vercel.app/auth/signup`, {
+      const response = await fetch(`https://quiz-app-imh9.onrender.com/auth/signup`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
