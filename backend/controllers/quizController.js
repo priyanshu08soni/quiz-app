@@ -117,7 +117,7 @@ quizController.post('/quiz-attempts', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
 });
-quizController.get('quiz-attempts/:id', async (req, res) => {
+quizController.get('/quiz-attempts/:id', async (req, res) => {
     try {
         const { id } = req.params; // Correctly extract 'id' from params
         console.log("Fetching attempts for user:", id);
