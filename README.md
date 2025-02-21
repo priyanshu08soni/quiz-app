@@ -69,39 +69,30 @@ Clone the Repository
 -- git clone https://github.com/yourusername/quiz-app.git
 -- cd quiz-app
 
-Backend Setup
-
-Navigate to the backend directory:
-
--- cd backend
-
-Install dependencies:
-
--- npm install
-
-Create a .env file in the backend directory and configure:
+## Create a .env file in the backend directory and configure:
 
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 
-Start the backend server:
+## Backend Setup
 
-npm test
+```terminal
+$ cd backend
+
+$ npm install
+
+$ npm test
+```
 
 Frontend Setup
+```terminal
+$ cd ../frontend
 
-Navigate to the frontend directory:
+$ npm install
 
--- cd ../frontend
-
-Install dependencies:
-
--- npm install
-
-Start the development server:
-
--- npm start
+$ npm start
+```
 
 Usage
 
@@ -111,28 +102,18 @@ Register or log in to start taking quizzes.
 
 Create, attempt, and review quizzes with instant feedback.
 
-Deployment
 
-Frontend
+## Deployment
 
-The frontend can be deployed on Vercel or Netlify.
+### Frontend
 
-Backend
+The frontend deployed Netlify.
 
-The backend can be deployed on platforms like Render, Railway, or a VPS.
+### Backend
 
-Contributing
+The backend deployed Render.
 
-Fork the repository.
 
-Create a new branch (git checkout -b feature-branch).
-
-Commit your changes (git commit -m 'Add new feature').
-
-Push to the branch (git push origin feature-branch).
-
-Open a Pull Request.
-
-License
+## License
 
 This project is licensed under the MIT License.
