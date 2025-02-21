@@ -35,10 +35,9 @@ authController.post('/login', async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         const errorMsg = 'Auth failed email or password is wrong';
-        if (!user) {
-            return res.status(403)
-                .json({ message: errorMsg, success: false });
-        }
+        if(!user){
+            throw new Error("User credentials are wrong!")
+         }
         const isPassEqual = await bcrypt.compare(password, user.password);
         if (!isPassEqual) {
             return res.status(403)
