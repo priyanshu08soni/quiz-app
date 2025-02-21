@@ -15,7 +15,7 @@ authController.post('/signup',async (req, res) => {
                 .json({ message: 'User is already exist, you can login', success: false });
         }
         const hashedPassword = await bcrypt.hash(password,10);
-        const userModel = await User.create({ name, email, password : hashedPassword });
+        const userModel = await User.create({ name: name, email: email, password : hashedPassword });
         await userModel.save();
         res.status(201)
             .json({
