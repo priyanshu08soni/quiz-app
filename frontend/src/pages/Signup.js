@@ -30,23 +30,20 @@ const Signup = () => {
 
     try {
       const response = await fetch(`https://quiz-app-imh9.onrender.com/auth/signup`, {
+        method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
-        method: "POST",
-        body: JSON.stringify({name, email, password})
+        body: JSON.stringify(signupInfo)
       });
 
       const result = await response.json();
-      const { success, message, jwtToken, name, userId, error } = result;
-      
+      const { success, message, error } = result;
+
       if (success) {
         toast.success(message);
-        localStorage.setItem('token', jwtToken);
-        localStorage.setItem('loggedInUser', name);
-        localStorage.setItem('userId', userId);
         setTimeout(() => {
-          navigate('/');
+          navigate('/login');
         }, 1000);
       } else if (error?.details?.[0]?.message) {
         toast.error(error.details[0].message);
