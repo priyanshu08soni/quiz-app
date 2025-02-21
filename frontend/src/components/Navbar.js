@@ -6,7 +6,6 @@ import { toast } from 'sonner';
 const Navbar = () => {
   const [loggedInUser, setLoggedInUser] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Award, Github, Heart, Linkedin, Mail, Phone } from "lucide-react";
+import { Award, Github, Linkedin, Mail, Phone } from "lucide-react";
 
 const Footer = () => {
   return (

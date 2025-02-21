@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Award, Brain, Target, Timer, Trophy, Users } from 'lucide-react';
-import { toast } from 'sonner';
+import { Brain, Target, Timer, Trophy, Users } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import FeatureCard from '../components/FeatureCard';
