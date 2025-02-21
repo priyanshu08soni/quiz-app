@@ -2,10 +2,6 @@
 
 <p align="center">
   <b>Full-stack interactive quiz platform</b>
-  [Visit](https://luxury-sherbet-7950f9.netlify.app)
-  Use
-  Email : priyanshus20k4@gmail.com
-  Password : 1234
 </p>
 
 ---
