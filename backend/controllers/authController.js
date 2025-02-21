@@ -3,31 +3,30 @@ const jwt = require('jsonwebtoken');
 const User = require("../models/User");
 const authController = require('express').Router();
 
-authController.post('/signup', async (req, res) => {
+authController.post('/signup',async (req, res) => {
     try {
         const { name, email, password } = req.body;
-
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(409).json({ message: 'User already exists, you can login', success: false });
+        const user = await User.findOne({ email });
+        if (user) {
+            return res.status(409)
+                .json({ message: 'User is already exist, you can login', success: false });
         }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = await User.create({ name, email, password: hashedPassword });
-
-        
-        res.status(201).json({
-            message: "Signup successful",
-            user: newUser,
-            success: true,
-            token
-        });
-
+        const userModel = new User.create({ name, email, password });
+        userModel.password = await bcrypt.hash(password, 10);
+        await userModel.save();
+        res.status(201)
+            .json({
+                message: "Signup successfully",
+                success: true
+            })
     } catch (err) {
-        throw new Error("Failed");
+        res.status(500)
+            .json({
+                message: "Internal server errror",
+                success: false
+            })
     }
 });
-
 
 
 authController.post('/login', async (req, res) => {
@@ -35,9 +34,10 @@ authController.post('/login', async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         const errorMsg = 'Auth failed email or password is wrong';
-        if(!user){
-            throw new Error("User credentials are wrong!")
-         }
+        if (!user) {
+            return res.status(403)
+                .json({ message: errorMsg, success: false });
+        }
         const isPassEqual = await bcrypt.compare(password, user.password);
         if (!isPassEqual) {
             return res.status(403)
