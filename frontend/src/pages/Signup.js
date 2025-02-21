@@ -137,11 +137,6 @@ const Signup = () => {
                 Sign up
               </button>
             </div>
-            <div>
-              <div>Use :</div>
-              <div>Email : priyanshus20k4@gmail.com</div>
-              <div>Password : 1234</div>
-            </div>
           </form>
         </div>
       </div>
