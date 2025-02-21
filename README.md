@@ -1,10 +1,10 @@
 # QUIZ APP
 
-Overview
+## Overview
 
 This is a full-stack interactive quiz application built using React.js for the frontend and Express.js with MongoDB for the backend. The platform allows users to create quizzes, attempt multiple times, receive instant feedback, track progress, and review answers.
 
-Features
+## Features
 
 User Authentication: Secure login and registration system.
 
@@ -22,9 +22,9 @@ Data Persistence: MongoDB is used to store quiz data.
 
 Responsive Design: Optimized for both mobile and desktop users.
 
-Tech Stack
+## Tech Stack
 
-Frontend
+### Frontend
 
 React.js
 
@@ -38,7 +38,7 @@ React Toastify & Sonner (for notifications)
 
 Axios (for API calls)
 
-Backend
+### Backend
 
 Node.js & Express.js
 
@@ -54,9 +54,9 @@ Multer (for file uploads)
 
 Dotenv (for environment variables)
 
-Installation & Setup
+## Installation & Setup
 
-Prerequisites
+### Prerequisites
 
 Ensure you have the following installed:
 
@@ -66,18 +66,18 @@ MongoDB
 
 Clone the Repository
 
-git clone https://github.com/yourusername/quiz-app.git
-cd quiz-app
+-- git clone https://github.com/yourusername/quiz-app.git
+-- cd quiz-app
 
 Backend Setup
 
 Navigate to the backend directory:
 
-cd backend
+-- cd backend
 
 Install dependencies:
 
-npm install
+-- npm install
 
 Create a .env file in the backend directory and configure:
 
@@ -93,15 +93,15 @@ Frontend Setup
 
 Navigate to the frontend directory:
 
-cd ../frontend
+-- cd ../frontend
 
 Install dependencies:
 
-npm install
+-- npm install
 
 Start the development server:
 
-npm start
+-- npm start
 
 Usage
 
