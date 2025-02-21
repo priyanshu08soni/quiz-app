@@ -24,6 +24,7 @@ authController.post('/signup', async (req, res) => {
         });
 
     } catch (err) {
+        console.error("Signup Error:", err); // Log the error
         res.status(500).json({ message: err.message, success: false });
     }
 });
