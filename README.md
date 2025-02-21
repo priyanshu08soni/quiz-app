@@ -67,7 +67,7 @@ MongoDB
 Clone the Repository
 
 ```terminal
--- git clone https://github.com/yourusername/quiz-app.git
+-- git clone https://github.com/priyanshu08soni/quiz-app.git
 -- cd quiz-app
 ```
 
