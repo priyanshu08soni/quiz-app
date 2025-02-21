@@ -5,32 +5,26 @@ const authController = require('express').Router();
 
 authController.post('/signup', async (req, res) => {
     try {
-        const user = await User.findOne({ email: req.body.email });
-        if (user) {
+        const { name, email, password } = req.body;
+
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
             return res.status(409).json({ message: 'User already exists, you can login', success: false });
         }
 
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const newUser = await User.create({ ...req.body, password: hashedPassword });
-        const jwtToken = jwt.sign(
-            { email: user.email, _id: user._id },
-            process.env.JWT_SECRET,
-            { expiresIn: '24h' }
-        )
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = await User.create({ name, email, password: hashedPassword });
+
         
-        res.status(200)
-        .json({
-            message: "SignUp Success",
+        res.status(201).json({
+            message: "Signup successful",
+            user: newUser,
             success: true,
-            jwtToken,
-            email,
-            userId : user._id,
-            name: user.name
-        })
+            token
+        });
 
     } catch (err) {
-        console.error("Signup Error:", err); // Log the error
-        res.status(500).json({ message: err.message, success: false });
+        throw new Error("Failed");
     }
 });
 
