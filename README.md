@@ -66,8 +66,10 @@ MongoDB
 
 Clone the Repository
 
+```terminal
 -- git clone https://github.com/yourusername/quiz-app.git
 -- cd quiz-app
+```
 
 ## Create a .env file in the backend directory and configure:
 
