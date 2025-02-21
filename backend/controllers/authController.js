@@ -3,42 +3,35 @@ const jwt = require('jsonwebtoken');
 const User = require("../models/User");
 const authController = require('express').Router();
 
-authController.post('/signup', async (req, res) => {
+authController.post('/signup', async(req, res) => {
     try {
-        const { name, email, password } = req.body;
+      const isExisting = await User.findOne({email: req.body.email})  
+      if(isExisting){
+        throw new Error("Already such an account with this email. Try a new one!")
+      }
 
-        // Check if user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(409).json({
-                message: 'User already exists, please login',
-                success: false
-            });
-        }
+      const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Create new user
-        const newUser = new User({
-            name,
-            email,
-            password: hashedPassword
-        });
-
-        await newUser.save();
-
-        res.status(201).json({
-            message: "Signup successful",
-            success: true
-        });
-    } catch (err) {
-        res.status(500).json({
-            message: "Internal server error",
-            success: false
-        });
+      const newUser = await User.create({...req.body, password: hashedPassword})
+      const {password, ...others} = newUser._doc
+      const jwtToken = jwt.sign(
+        { email: newUser.email, _id: newUser._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+    )
+    res.status(200)
+    .json({
+        message: "Login Success",
+        success: true,
+        jwtToken,
+        email,
+        userId : newUser._id,
+        name: newUser.name
+    })
+    } catch (error) {
+        return res.status(500).json(error.message)
     }
-});
+})
 
 authController.post('/login', async (req, res) => {
     try {
