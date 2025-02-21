@@ -3,33 +3,31 @@ const jwt = require('jsonwebtoken');
 const User = require("../models/User");
 const authController = require('express').Router();
 
-authController.post('/signup',async (req, res) => {
+authController.post('/signup', async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        const user = await User.findOne({ email: email });
-        if(user){
-            throw new Error("Already such an Account with this email. Try a new one!")
+
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(409).json({ message: 'User already exists, you can login', success: false });
         }
-        if (user) {
-            return res.status(409)
-                .json({ message: 'User is already exist, you can login', success: false });
-        }
-        const hashedPassword = await bcrypt.hash(password,10);
-        const userModel = await User.create({ name: name, email: email, password : hashedPassword });
-        await userModel.save();
-        res.status(201)
-            .json({
-                message: "Signup successfully",
-                success: true
-            })
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = await User.create({ name, email, password: hashedPassword });
+
+        
+        res.status(201).json({
+            message: "Signup successful",
+            user: newUser,
+            success: true,
+            token
+        });
+
     } catch (err) {
-        res.status(500)
-            .json({
-                message: "Internal server errror",
-                success: false
-            })
+        res.status(500).json({ message: err.message, success: false });
     }
 });
+
 
 
 authController.post('/login', async (req, res) => {
