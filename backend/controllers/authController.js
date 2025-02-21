@@ -6,7 +6,7 @@ const authController = require('express').Router();
 authController.post('/signup',async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: email });
         if(user){
             throw new Error("Already such an Account with this email. Try a new one!")
         }
