@@ -10,6 +10,7 @@ import Quiz from './pages/Quiz';
 import AnswerReview from './pages/AnswerReview';
 import Dashboard from './pages/Dashboard';
 import About from './pages/About';
+import CreateQuiz from './pages/CreateQuiz';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // Start as null to indicate loading
@@ -45,6 +46,7 @@ function App() {
         <Route path='/home' element={<PrivateRoute element={<Home />} />} />
         <Route path='/dashboard' element={<PrivateRoute element={<Dashboard />} />} />
         <Route path='/quizzes' element={<PrivateRoute element={<Quizzes />} />} />
+        <Route path='/create-quiz' element={<PrivateRoute element={<CreateQuiz />} />} />
         <Route path='/quizzes/:id' element={<PrivateRoute element={<Quiz />} />} />
         <Route path='/quizzes/:id/answers' element={<PrivateRoute element={<AnswerReview />} />} />
         <Route path='/about' element={<About/>} />

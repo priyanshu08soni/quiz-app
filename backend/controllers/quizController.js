@@ -146,6 +146,27 @@ quizController.get('/quiz-attempts/:id', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
 });
+quizController.get('/quiz-attempt/:id', async (req, res) => {
+    try {
+        const { id } = req.params; // Correctly extract 'id' from params
+        console.log("Fetching attempt with id:", id);
+
+        if (!id || id.length !== 24) { // Validate ObjectId length
+            return res.status(400).json({ success: false, message: 'Invalid attempt ID' });
+        }
+
+        // ✅ Validate user existence
+        const attempt = await QuizAttemptModel.findById(id);
+        if (!attempt) {
+            return res.status(404).json({ success: false, message: 'Attempt not found' });
+        }
+
+        res.status(200).json({ success: true, attempt });
+    } catch (error) {
+        console.error('Error fetching quiz attempts:', error);
+        res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+    }
+});
 
 
 

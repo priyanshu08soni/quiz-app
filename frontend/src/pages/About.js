@@ -24,7 +24,7 @@ const About = () => {
       {/* Mission Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
-          <div className="md:w-1/2 mb-8 md:mb-0">
+          <div className="md:w-1/2 mb-8 md:mb-0 animate-slideIn">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Our Mission
             </h2>
@@ -35,7 +35,7 @@ const About = () => {
               themselves, and celebrate their achievements.
             </p>
           </div>
-          <div className="md:w-1/2 md:pl-12">
+          <div className="md:w-1/2 md:pl-12 space-x-3 animate-fadeIn">
             <img
               src="/assets/community.jpg"
               alt="Our Mission"
@@ -48,7 +48,7 @@ const About = () => {
       {/* Community Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-primary/5">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
-          <div className="md:w-1/2 mb-8 md:mb-0">
+          <div className="md:w-1/2 mb-8 md:mb-0 animate-fadeIn">
             <img
               src="/assets/community_people.jpg"
               alt="Community"
@@ -56,7 +56,8 @@ const About = () => {
               width={400}
             />
           </div>
-          <div className="md:w-1/2 md:pl-12">
+          <div className="md:w-1/2 md:pl-12 animate-slideIn
+          ">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Join Our Community
             </h2>
