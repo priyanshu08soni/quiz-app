@@ -31,7 +31,7 @@ const Dashboard = () => {
   const handleQuizDetails = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/quizzes/quiz-attempt/${id}`
+        `https://quiz-app-imh9.onrender.com/quizzes/quiz-attempt/${id}`
       );
       if (!response.ok) throw new Error(`Fetching failed: ${response.status}`);
       const result = await response.json();
@@ -49,7 +49,7 @@ const Dashboard = () => {
       }
       try {
         const response = await fetch(
-          `http://localhost:5000/quizzes/quiz-attempts/${userId}`
+          `https://quiz-app-imh9.onrender.com/quizzes/quiz-attempts/${userId}`
         );
         const data = await response.json();
         setAttempts(data.attempts);
