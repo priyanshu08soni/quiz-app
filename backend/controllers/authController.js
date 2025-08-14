@@ -97,7 +97,8 @@ authController.post('/login', async (req, res) => {
             jwtToken,
             email: user.email,
             userId: user._id,
-            name: user.name
+            name: user.name,
+            username: user.username
         })
     } catch (err) {
         console.error('Login error:', err);

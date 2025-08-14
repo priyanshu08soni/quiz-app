@@ -35,13 +35,14 @@ const Login = () => {
       });
       
       const result = await response.json();
-      const { success, message, jwtToken, name, userId, error } = result;
+      const { success, message, jwtToken, name, userId, error, username } = result;
       
       if (success) {
         toast.success(message);
         localStorage.setItem('token', jwtToken);
         localStorage.setItem('loggedInUser', name);
         localStorage.setItem('userId', userId);
+        localStorage.setItem('username', username);
         setTimeout(() => {
           navigate('/');
         }, 1000);
