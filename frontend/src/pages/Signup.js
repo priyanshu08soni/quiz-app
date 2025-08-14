@@ -3,8 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Award } from 'lucide-react';
 
-
-
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState({
     name: '',
@@ -13,11 +11,18 @@ const Signup = () => {
     password: ''
   });
 
+  const [errors, setErrors] = useState({
+    username: '',
+    email: ''
+  });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSignupInfo(prev => ({ ...prev, [name]: value }));
+    // Clear error for the field being changed
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleSignup = async (e) => {
@@ -32,25 +37,28 @@ const Signup = () => {
     try {
       const response = await fetch(`https://quiz-app-imh9.onrender.com/auth/signup`, {
         method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(signupInfo)
       });
 
       const result = await response.json();
-      const { success, message, error } = result;
 
-      if (success) {
-        toast.success(message);
-        setTimeout(() => {
-          navigate('/login');
-        }, 1000);
-      } else if (error?.details?.[0]?.message) {
-        toast.error(error.details[0].message);
-      } else if (!success) {
-        toast.error(message);
+      if (response.ok) {
+        toast.success(result.message);
+        setTimeout(() => navigate('/login'), 1000);
+      } 
+      else if (response.status === 409) {
+        // Conflict (email or username already exists)
+        if (result.message.toLowerCase().includes('email')) {
+          setErrors(prev => ({ ...prev, email: result.message }));
+        } else if (result.message.toLowerCase().includes('username')) {
+          setErrors(prev => ({ ...prev, username: result.message }));
+        }
+      } 
+      else {
+        toast.error(result.message || 'Signup failed');
       }
+
     } catch (err) {
       toast.error('An error occurred during signup');
     }
@@ -76,77 +84,81 @@ const Signup = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSignup}>
+            {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Full Name
               </label>
-              <div className="mt-1">
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  required
-                  value={signupInfo.name}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-              </div>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                required
+                value={signupInfo.name}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              />
             </div>
+
+            {/* Username */}
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                 Username
               </label>
-              <div className="mt-1">
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  autoComplete="username"
-                  required
-                  value={signupInfo.username}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-              </div>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                autoComplete="username"
+                required
+                value={signupInfo.username}
+                onChange={handleChange}
+                className={`mt-1 block w-full rounded-md border px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${
+                  errors.username ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+              {errors.username && <p className="mt-1 text-sm text-red-500">{errors.username}</p>}
             </div>
 
+            {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
               </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={signupInfo.email}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-              </div>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={signupInfo.email}
+                onChange={handleChange}
+                className={`mt-1 block w-full rounded-md border px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${
+                  errors.email ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
             </div>
 
+            {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={signupInfo.password}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-              </div>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={signupInfo.password}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              />
             </div>
 
+            {/* Submit */}
             <div>
               <button
                 type="submit"
