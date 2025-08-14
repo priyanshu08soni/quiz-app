@@ -9,11 +9,18 @@ const Login = () => {
     password: ''
   });
 
+  const [errors, setErrors] = useState({
+    email: '',
+    password: ''
+  });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginInfo(prev => ({ ...prev, [name]: value }));
+    // Clear field-specific error on change
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleLogin = async (e) => {
@@ -28,29 +35,35 @@ const Login = () => {
     try {
       const response = await fetch(`https://quiz-app-imh9.onrender.com/auth/login`, {
         method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginInfo)
       });
       
       const result = await response.json();
-      const { success, message, jwtToken, name, userId, error, username } = result;
+      const { success, message, jwtToken, name, userId, username } = result;
       
-      if (success) {
+      if (response.ok && success) {
         toast.success(message);
         localStorage.setItem('token', jwtToken);
         localStorage.setItem('loggedInUser', name);
         localStorage.setItem('userId', userId);
         localStorage.setItem('username', username);
-        setTimeout(() => {
-          navigate('/');
-        }, 1000);
-      } else if (error?.details?.[0]?.message) {
-        toast.error(error.details[0].message);
-      } else if (!success) {
-        toast.error(message);
+        setTimeout(() => navigate('/'), 1000);
+      } 
+      else if (response.status === 401 || response.status === 404) {
+        // Handle incorrect email or password based on message
+        if (message.toLowerCase().includes('email')) {
+          setErrors(prev => ({ ...prev, email: message }));
+        } else if (message.toLowerCase().includes('password')) {
+          setErrors(prev => ({ ...prev, password: message }));
+        } else {
+          toast.error(message);
+        }
+      } 
+      else {
+        toast.error(message || 'Login failed');
       }
+
     } catch (err) {
       toast.error('An error occurred during login');
     }
@@ -76,42 +89,47 @@ const Login = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleLogin}>
+            {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
               </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={loginInfo.email}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-              </div>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={loginInfo.email}
+                onChange={handleChange}
+                className={`mt-1 block w-full rounded-md border px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${
+                  errors.email ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
             </div>
 
+            {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={loginInfo.password}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-              </div>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={loginInfo.password}
+                onChange={handleChange}
+                className={`mt-1 block w-full rounded-md border px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${
+                  errors.password ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+              {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
             </div>
 
+            {/* Submit */}
             <div>
               <button
                 type="submit"
@@ -120,7 +138,9 @@ const Login = () => {
                 Sign in
               </button>
             </div>
-            <div>
+
+            {/* Test credentials */}
+            <div className="mt-4 text-sm text-gray-600">
               <div>Use :</div>
               <div>Email : priyanshus20k4@gmail.com</div>
               <div>Password : 1234</div>
