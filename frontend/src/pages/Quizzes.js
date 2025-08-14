@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Navbar from "../components/Navbar";
-import { BookCopy, Code } from "lucide-react";
+import { BookCopy } from "lucide-react";
 import QuizzesCard from "../components/QuizzesCard";
 const Quizzes = () => {
   const [quizzes, setQuizzes] = useState([]);

@@ -24,6 +24,8 @@ const Dashboard = () => {
   const [filteredAttempts, setFilteredAttempts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState("");
+
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
@@ -55,6 +57,7 @@ const Dashboard = () => {
         setAttempts(data.attempts);
         setFilteredAttempts(data.attempts);
       } catch (error) {
+        setError(error instanceof Error ? error.message : "An error occurred");
         toast.error("Failed to load dashboard data");
       } finally {
         setLoading(false);
@@ -137,7 +140,18 @@ const Dashboard = () => {
     return null;
   };
 
-
+  if (loading)
+  return (
+    <div className="flex justify-center items-center min-h-screen">
+      Loading...
+    </div>
+  );
+if (error)
+  return (
+    <div className="flex justify-center items-center min-h-screen text-red-500">
+      Error: {error}
+    </div>
+  );
   return (
     <div className="min-h-screen bg-gray-50 py-20">
       <Navbar />
