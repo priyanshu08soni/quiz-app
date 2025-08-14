@@ -9,7 +9,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem('loggedInUser');
+    const user = localStorage.getItem('username');
     if (user) setLoggedInUser(user);
   }, []);
 

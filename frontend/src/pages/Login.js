@@ -26,7 +26,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     const { email, password } = loginInfo;
-    
+
     if (!email || !password) {
       toast.error('Email and password are required');
       return;
@@ -38,10 +38,10 @@ const Login = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginInfo)
       });
-      
+
       const result = await response.json();
-      const { success, message, jwtToken, name, userId, username } = result;
-      
+      const { success, message, field, jwtToken, name, userId, username } = result;
+
       if (response.ok && success) {
         toast.success(message);
         localStorage.setItem('token', jwtToken);
@@ -50,15 +50,9 @@ const Login = () => {
         localStorage.setItem('username', username);
         setTimeout(() => navigate('/'), 1000);
       } 
-      else if (response.status === 401 || response.status === 404) {
-        // Handle incorrect email or password based on message
-        if (message.toLowerCase().includes('email')) {
-          setErrors(prev => ({ ...prev, email: message }));
-        } else if (message.toLowerCase().includes('password')) {
-          setErrors(prev => ({ ...prev, password: message }));
-        } else {
-          toast.error(message);
-        }
+      else if (!success && field) {
+        // Show field-specific error
+        setErrors(prev => ({ ...prev, [field]: message }));
       } 
       else {
         toast.error(message || 'Login failed');

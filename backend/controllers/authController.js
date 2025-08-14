@@ -59,7 +59,7 @@ authController.post('/signup', async(req, res) => {
 authController.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        
+
         if (!email || !password) {
             return res.status(400).json({
                 message: "Please provide email and password",
@@ -68,20 +68,21 @@ authController.post('/login', async (req, res) => {
         }
 
         const user = await User.findOne({ email });
-        const errorMsg = 'Auth failed: email or password is wrong';
-        
+
         if (!user) {
-            return res.status(403).json({ 
-                message: errorMsg, 
-                success: false 
+            return res.status(403).json({
+                message: "No account found with this email",
+                field: "email",
+                success: false
             });
         }
 
         const isPassEqual = await bcrypt.compare(password, user.password);
         if (!isPassEqual) {
-            return res.status(403).json({ 
-                message: errorMsg, 
-                success: false 
+            return res.status(403).json({
+                message: "Incorrect password",
+                field: "password",
+                success: false
             });
         }
 
@@ -89,7 +90,7 @@ authController.post('/login', async (req, res) => {
             { email: user.email, _id: user._id },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
-        )
+        );
 
         res.status(200).json({
             message: "Login Success",
@@ -99,13 +100,14 @@ authController.post('/login', async (req, res) => {
             userId: user._id,
             name: user.name,
             username: user.username
-        })
+        });
+
     } catch (err) {
         console.error('Login error:', err);
         res.status(500).json({
             message: "Internal server error",
             success: false
-        })
+        });
     }
 });
 
