@@ -6,17 +6,24 @@ const authController = require('express').Router();
 authController.post('/signup', async(req, res) => {
     try {
         // Validate required fields
-        if (!req.body.email || !req.body.password || !req.body.name) {
+        if (!req.body.email || !req.body.password || !req.body.name || !req.body.username) {
             return res.status(400).json({
                 message: "Please provide all required fields",
                 success: false
             });
         }
 
-        const isExisting = await User.findOne({email: req.body.email})  
-        if(isExisting){
+        const isExistingEmail = await User.findOne({email: req.body.email})  
+        if(isExistingEmail){
             return res.status(409).json({
                 message: "Already such an account with this email. Try a new one!",
+                success: false
+            });
+        }
+        const isExistingUsername = await User.findOne({username: req.body.username})  
+        if(isExistingUsername){
+            return res.status(409).json({
+                message: "Already such an account with this username. Try a new one!",
                 success: false
             });
         }
@@ -37,7 +44,8 @@ authController.post('/signup', async(req, res) => {
             jwtToken,
             email: newUser.email,
             userId: newUser._id,
-            name: newUser.name
+            name: newUser.name,
+            username: newUser.username
         })
     } catch (error) {
         console.error('Signup error:', error);

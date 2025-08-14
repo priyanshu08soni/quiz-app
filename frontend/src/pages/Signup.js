@@ -8,6 +8,7 @@ import { Award } from 'lucide-react';
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState({
     name: '',
+    username: '',
     email: '',
     password: ''
   });
@@ -21,10 +22,10 @@ const Signup = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const { name, email, password } = signupInfo;
+    const { name, username, email, password } = signupInfo;
     
-    if (!name || !email || !password) {
-      toast.error('Name, email and password are required');
+    if (!name || !username || !email || !password) {
+      toast.error('Name, Username, email and password are required');
       return;
     }
 
@@ -87,6 +88,23 @@ const Signup = () => {
                   autoComplete="name"
                   required
                   value={signupInfo.name}
+                  onChange={handleChange}
+                  className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                Username
+              </label>
+              <div className="mt-1">
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
+                  required
+                  value={signupInfo.username}
                   onChange={handleChange}
                   className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
