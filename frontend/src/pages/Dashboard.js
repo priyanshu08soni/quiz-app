@@ -14,8 +14,7 @@ import {
   Book,
   Clock,
   Trophy,
-  ArrowBigRight,
-  ChevronDown,
+  ArrowBigRight
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
