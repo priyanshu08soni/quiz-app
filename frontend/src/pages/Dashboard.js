@@ -25,8 +25,12 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState("");
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
 
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedGraph, setSelectedGraph] = useState(""); // ✅ state for graph filter
+
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
 
@@ -65,6 +69,7 @@ const Dashboard = () => {
     };
     fetchAttempts();
   }, [userId]);
+
   useEffect(() => {
     let filtered = attempts.filter((attempt) =>
       attempt.quizId?.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -126,13 +131,14 @@ const Dashboard = () => {
 
   const groupedAttempts = groupAttemptsByTitle();
 
-
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const date = new Date(payload[0].payload.name);
       return (
         <div className="bg-white p-3 shadow-md border border-primary rounded-xl">
-          <p className="text-sm font-semibold text-gray-600">Date: {date.toLocaleDateString()} {date.toLocaleTimeString()}</p>
+          <p className="text-sm font-semibold text-gray-600">
+            Date: {date.toLocaleDateString()} {date.toLocaleTimeString()}
+          </p>
           <p className="text-sm text-primary">Score: {payload[0].value}</p>
         </div>
       );
@@ -141,17 +147,18 @@ const Dashboard = () => {
   };
 
   if (loading)
-  return (
-    <div className="flex justify-center items-center min-h-screen">
-      Loading...
-    </div>
-  );
-if (error)
-  return (
-    <div className="flex justify-center items-center min-h-screen text-red-500">
-      Error: {error}
-    </div>
-  );
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        Loading...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex justify-center items-center min-h-screen text-red-500">
+        Error: {error}
+      </div>
+    );
+
   return (
     <div className="min-h-screen bg-gray-50 py-20">
       <Navbar />
@@ -161,6 +168,7 @@ if (error)
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
         </div>
 
+        {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {stats.map((stat, index) => (
             <div
@@ -179,9 +187,11 @@ if (error)
             </div>
           ))}
         </div>
-        {/* Enhanced Filters Section */}
+
+        {/* Filters Section */}
         <div className="bg-white rounded-2xl shadow-md p-6 mb-6 border border-gray-200 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fadeIn">
           <div className="flex flex-col md:flex-row md:items-center gap-4">
+            {/* Search Filter */}
             <div className="flex-1">
               <label
                 htmlFor="search"
@@ -198,22 +208,10 @@ if (error)
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <svg
-                  className="absolute right-3 top-2.5 h-5 w-5 text-gray-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
               </div>
             </div>
+
+            {/* Date Filter */}
             <div className="flex-1">
               <label
                 htmlFor="date"
@@ -229,6 +227,7 @@ if (error)
                 onChange={(e) => setSelectedDate(e.target.value)}
               />
             </div>
+
             {(searchTerm || selectedDate) && (
               <div className="mt-5">
                 <button
@@ -312,42 +311,103 @@ if (error)
             </div>
           </div>
 
-          <div className="col-span-1">
-            <div className="grid grid-cols-1 gap-6">
-              {Object.entries(groupedAttempts).map(([title, data], index) => (
-                <div
-                  key={index}
-                  className="bg-white col-span-1 rounded-2xl shadow-md p-6 border border-gray-200 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fadeIn"
-                >
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                    {title} Performance
-                  </h2>
-                  <div className="h-[400px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={data}>
-                        <XAxis
-                          dataKey="name"
-                          textAnchor="end"
-                          height={60}
-                          tickFormatter={(value) =>
-                            new Date(value).toLocaleDateString()
-                          }
-                          tick={{ fontSize: 14 }}
-                        />
-                        <YAxis />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Legend />
-                        <Bar
-                          dataKey="score"
-                          fill="#9b87f5"
-                          radius={[4, 4, 0, 0]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
+          {/* ✅ Graph Filter Dropdown */}
+          <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-200 mb-6">
+            <label
+              htmlFor="graphFilter"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Select Graph
+            </label>
+            <select
+              id="graphFilter"
+              className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+              value={selectedGraph}
+              onChange={(e) => setSelectedGraph(e.target.value)}
+            >
+              {Object.keys(groupedAttempts).map((title, index) => (
+                <option key={index} value={title}>
+                  {title}
+                </option>
               ))}
-            </div>
+            </select>
+          </div>
+
+          {/* ✅ Graph Rendering */}
+          <div className="col-span-1">
+            {(() => {
+              const entries = Object.entries(groupedAttempts);
+
+              if (selectedGraph && groupedAttempts[selectedGraph]) {
+                return (
+                  <div className="bg-white col-span-1 rounded-2xl shadow-md p-6 border border-gray-200 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                      {selectedGraph} Performance
+                    </h2>
+                    <div className="h-[400px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={groupedAttempts[selectedGraph]}>
+                          <XAxis
+                            dataKey="name"
+                            textAnchor="end"
+                            height={60}
+                            tickFormatter={(value) =>
+                              new Date(value).toLocaleDateString()
+                            }
+                            tick={{ fontSize: 14 }}
+                          />
+                          <YAxis />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Legend />
+                          <Bar
+                            dataKey="score"
+                            fill="#9b87f5"
+                            radius={[4, 4, 0, 0]}
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                );
+              }
+
+              // Default first graph
+              if (entries.length > 0) {
+                const [firstTitle, firstData] = entries[0];
+                return (
+                  <div className="bg-white col-span-1 rounded-2xl shadow-md p-6 border border-gray-200 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                      {firstTitle} Performance
+                    </h2>
+                    <div className="h-[400px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={firstData}>
+                          <XAxis
+                            dataKey="name"
+                            textAnchor="end"
+                            height={60}
+                            tickFormatter={(value) =>
+                              new Date(value).toLocaleDateString()
+                            }
+                            tick={{ fontSize: 14 }}
+                          />
+                          <YAxis />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Legend />
+                          <Bar
+                            dataKey="score"
+                            fill="#9b87f5"
+                            radius={[4, 4, 0, 0]}
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                );
+              }
+
+              return <p className="text-gray-500">No graphs available</p>;
+            })()}
           </div>
         </div>
       </div>
