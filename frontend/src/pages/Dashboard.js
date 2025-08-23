@@ -67,7 +67,7 @@ const Dashboard = () => {
   }, [userId]);
   useEffect(() => {
     let filtered = attempts.filter((attempt) =>
-      attempt.quizId.title.toLowerCase().includes(searchTerm.toLowerCase())
+      attempt.quizId?.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     if (selectedDate) {
       filtered = filtered.filter(
@@ -112,7 +112,7 @@ const Dashboard = () => {
   const groupAttemptsByTitle = () => {
     const grouped = {};
     attempts.forEach((attempt) => {
-      const title = attempt.quizId.title;
+      const title = attempt.quizId?.title;
       if (!grouped[title]) {
         grouped[title] = [];
       }
@@ -281,7 +281,7 @@ if (error)
                     filteredAttempts.map((attempt, index) => (
                       <tr key={index} className="hover:bg-gray-50">
                         <td className="px-6 py-4 text-sm text-gray-900">
-                          {attempt.quizId.title}
+                          {attempt.quizId?.title}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">
                           {attempt.totalScore}
