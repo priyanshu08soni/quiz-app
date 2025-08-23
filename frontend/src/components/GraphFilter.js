@@ -10,6 +10,9 @@ export default function GraphFilter({ selectedGraph, setSelectedGraph, groupedAt
   const graphOptions = groupedAttempts ? Object.keys(groupedAttempts) : []
   const filteredOptions = graphOptions.filter((option) => option.toLowerCase().includes(searchTerm.toLowerCase()))
 
+  const displayValue = selectedGraph || (graphOptions.length > 0 ? graphOptions[0] : "Choose a graph to visualize")
+  const effectiveSelection = selectedGraph || (graphOptions.length > 0 ? graphOptions[0] : null)
+
   const handleSelect = (title) => {
     setSelectedGraph(title)
     setIsOpen(false)
@@ -56,7 +59,7 @@ export default function GraphFilter({ selectedGraph, setSelectedGraph, groupedAt
         >
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-blue-500 group-hover:bg-blue-600 transition-colors" />
-            <span className="text-left">{selectedGraph || "Choose a graph to visualize"}</span>
+            <span className="text-left">{displayValue}</span>
           </div>
           <ChevronDown
             size={20}
@@ -106,7 +109,8 @@ export default function GraphFilter({ selectedGraph, setSelectedGraph, groupedAt
                                  hover:bg-blue-50 hover:text-blue-700
                                  focus:outline-none focus:bg-blue-50 focus:text-blue-700
                                  ${
-                                   selectedGraph === title
+                                   // Use effectiveSelection for comparison
+                                   effectiveSelection === title
                                      ? "bg-blue-100 text-blue-800 border-r-4 border-blue-500"
                                      : "text-gray-700"
                                  }`}
@@ -114,7 +118,8 @@ export default function GraphFilter({ selectedGraph, setSelectedGraph, groupedAt
                       <div className="flex items-center gap-3">
                         <div
                           className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                            selectedGraph === title ? "bg-blue-500" : "bg-gray-300"
+                            // Use effectiveSelection for comparison
+                            effectiveSelection === title ? "bg-blue-500" : "bg-gray-300"
                           }`}
                         />
                         <span className="truncate">{title}</span>

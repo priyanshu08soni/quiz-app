@@ -30,7 +30,7 @@ const Dashboard = () => {
     new Date().toISOString().split("T")[0]
   );
 
-  const [selectedGraph, setSelectedGraph] = useState(""); // ✅ state for graph filter
+  const [selectedGraph, setSelectedGraph] = useState("");
 
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
