@@ -15,9 +15,11 @@ import {
   Clock,
   Trophy,
   ArrowBigRight,
+  ChevronDown,
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import GraphFilter from "../components/GraphFilter";
 
 const Dashboard = () => {
   const [attempts, setAttempts] = useState([]);
@@ -311,27 +313,11 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* ✅ Graph Filter Dropdown */}
-          <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-200 mb-6">
-            <label
-              htmlFor="graphFilter"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Select Graph
-            </label>
-            <select
-              id="graphFilter"
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
-              value={selectedGraph}
-              onChange={(e) => setSelectedGraph(e.target.value)}
-            >
-              {Object.keys(groupedAttempts).map((title, index) => (
-                <option key={index} value={title}>
-                  {title}
-                </option>
-              ))}
-            </select>
-          </div>
+          <GraphFilter
+        selectedGraph={selectedGraph}
+        setSelectedGraph={setSelectedGraph}
+        groupedAttempts={groupedAttempts}
+      />
 
           {/* ✅ Graph Rendering */}
           <div className="col-span-1">
