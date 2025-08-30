@@ -16,12 +16,12 @@ const Signup = () => {
     email: ''
   });
 
+  const [loading, setLoading] = useState(false); // 👈 loading state
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSignupInfo(prev => ({ ...prev, [name]: value }));
-    // Clear error for the field being changed
     setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
@@ -34,6 +34,7 @@ const Signup = () => {
       return;
     }
 
+    setLoading(true); // 👈 start loading
     try {
       const response = await fetch(`https://quiz-app-imh9.onrender.com/auth/signup`, {
         method: "POST",
@@ -48,7 +49,6 @@ const Signup = () => {
         setTimeout(() => navigate('/login'), 1000);
       } 
       else if (response.status === 409) {
-        // Conflict (email or username already exists)
         if (result.message.toLowerCase().includes('email')) {
           setErrors(prev => ({ ...prev, email: result.message }));
         } else if (result.message.toLowerCase().includes('username')) {
@@ -61,6 +61,8 @@ const Signup = () => {
 
     } catch (err) {
       toast.error('An error occurred during signup');
+    } finally {
+      setLoading(false); // 👈 stop loading
     }
   };
 
@@ -162,9 +164,33 @@ const Signup = () => {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                disabled={loading} // 👈 disable while loading
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
               >
-                Sign up
+                {loading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    ></path>
+                  </svg>
+                ) : (
+                  'Sign up'
+                )}
               </button>
             </div>
           </form>
