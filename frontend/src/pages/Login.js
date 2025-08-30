@@ -14,12 +14,12 @@ const Login = () => {
     password: ''
   });
 
+  const [loading, setLoading] = useState(false); // 👈 loading state
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginInfo(prev => ({ ...prev, [name]: value }));
-    // Clear field-specific error on change
     setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
@@ -32,6 +32,7 @@ const Login = () => {
       return;
     }
 
+    setLoading(true); // 👈 start loading
     try {
       const response = await fetch(`https://quiz-app-imh9.onrender.com/auth/login`, {
         method: "POST",
@@ -51,15 +52,15 @@ const Login = () => {
         setTimeout(() => navigate('/'), 1000);
       } 
       else if (!success && field) {
-        // Show field-specific error
         setErrors(prev => ({ ...prev, [field]: message }));
       } 
       else {
         toast.error(message || 'Login failed');
       }
-
     } catch (err) {
       toast.error('An error occurred during login');
+    } finally {
+      setLoading(false); // 👈 stop loading
     }
   };
 
@@ -127,9 +128,33 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                disabled={loading} // 👈 disable while loading
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
               >
-                Sign in
+                {loading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    ></path>
+                  </svg>
+                ) : (
+                  'Sign in'
+                )}
               </button>
             </div>
 
