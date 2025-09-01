@@ -57,7 +57,7 @@ quizController.delete('/:id', async (req, res) => {
         res.status(500).json({ message: 'Internal server error', success: false });
     }
 });
-
+// Attempt a quiz
 quizController.post('/quiz-attempts', async (req, res) => {
     try {
         const { userId, quizId, responses } = req.body;
@@ -117,6 +117,7 @@ quizController.post('/quiz-attempts', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
 });
+//Getting All the Attempts of the user
 quizController.get('/quiz-attempts/:id', async (req, res) => {
     try {
         const { id } = req.params; // Correctly extract 'id' from params
@@ -146,6 +147,7 @@ quizController.get('/quiz-attempts/:id', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
 });
+//Getting the quiz attempt with quiz id to show on Answer Review page
 quizController.get('/quiz-attempt/:id', async (req, res) => {
     try {
         const { id } = req.params; // Correctly extract 'id' from params
