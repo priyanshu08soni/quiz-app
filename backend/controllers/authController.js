@@ -28,9 +28,7 @@ authController.post('/signup', async(req, res) => {
             });
         }
 
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        const newUser = await User.create({...req.body, password: hashedPassword})
-        const {password, ...others} = newUser._doc
+        const newUser = await User.create({...req.body})
         
         const jwtToken = jwt.sign(
             { email: newUser.email, _id: newUser._id },
@@ -77,8 +75,7 @@ authController.post('/login', async (req, res) => {
             });
         }
 
-        const isPassEqual = await bcrypt.compare(password, user.password);
-        if (!isPassEqual) {
+        if (!(await user.matchPassword(password))) {
             return res.status(403).json({
                 message: "Incorrect password",
                 field: "password",
