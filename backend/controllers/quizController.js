@@ -2,9 +2,10 @@
 const User = require("../models/User");
 const QuizModel = require("../models/Quiz");
 const QuizAttemptModel = require("../models/QuizAttempt"); // ✅ Import the missing model
+const ensureAuthenticated = require("../middlewares/Auth");
 const quizController = require('express').Router();
 // Create a new quiz
-quizController.post('/', async (req, res) => {
+quizController.post('/', ensureAuthenticated, async (req, res) => {
     try {
         const { title, description, questions } = req.body;
         const quiz = new QuizModel({ title, description, questions });
@@ -16,7 +17,7 @@ quizController.post('/', async (req, res) => {
 });
 
 // Get all quizzes
-quizController.get('/', async (req, res) => {
+quizController.get('/', ensureAuthenticated, async (req, res) => {
     try {
         const quizzes = await QuizModel.find();
         res.status(200).json({ success: true, quizzes });
@@ -26,7 +27,7 @@ quizController.get('/', async (req, res) => {
 });
 
 // Get a single quiz by ID
-quizController.get('/:id', async (req, res) => {
+quizController.get('/:id', ensureAuthenticated, async (req, res) => {
     try {
         const quiz = await QuizModel.findById(req.params.id);
         if (!quiz) return res.status(404).json({ message: 'Quiz not found', success: false });
@@ -37,7 +38,7 @@ quizController.get('/:id', async (req, res) => {
 });
 
 // Update a quiz by ID
-quizController.put('/:id', async (req, res) => {
+quizController.put('/:id', ensureAuthenticated, async (req, res) => {
     try {
         const updatedQuiz = await QuizModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!updatedQuiz) return res.status(404).json({ message: 'Quiz not found', success: false });
@@ -48,7 +49,7 @@ quizController.put('/:id', async (req, res) => {
 });
 
 // Delete a quiz by ID
-quizController.delete('/:id', async (req, res) => {
+quizController.delete('/:id', ensureAuthenticated, async (req, res) => {
     try {
         const deletedQuiz = await QuizModel.findByIdAndDelete(req.params.id);
         if (!deletedQuiz) return res.status(404).json({ message: 'Quiz not found', success: false });
@@ -58,7 +59,7 @@ quizController.delete('/:id', async (req, res) => {
     }
 });
 // Attempt a quiz
-quizController.post('/quiz-attempts', async (req, res) => {
+quizController.post('/quiz-attempts', ensureAuthenticated, async (req, res) => {
     try {
         const { userId, quizId, responses } = req.body;
 
@@ -118,7 +119,7 @@ quizController.post('/quiz-attempts', async (req, res) => {
     }
 });
 //Getting All the Attempts of the user
-quizController.get('/quiz-attempts/:id', async (req, res) => {
+quizController.get('/quiz-attempts/:id', ensureAuthenticated, async (req, res) => {
     try {
         const { id } = req.params; // Correctly extract 'id' from params
         console.log("Fetching attempts for user:", id);
@@ -148,7 +149,7 @@ quizController.get('/quiz-attempts/:id', async (req, res) => {
     }
 });
 //Getting the quiz attempt with quiz id to show on Answer Review page
-quizController.get('/quiz-attempt/:id', async (req, res) => {
+quizController.get('/quiz-attempt/:id', ensureAuthenticated, async (req, res) => {
     try {
         const { id } = req.params; // Correctly extract 'id' from params
         console.log("Fetching attempt with id:", id);
