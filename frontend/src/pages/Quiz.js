@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
+import { API_PATHS } from '../utils';
 
 
 
@@ -17,7 +18,7 @@ const Quiz = () => {
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
-        const response = await fetch(`https://quiz-app-imh9.onrender.com/quizzes/${id}`);
+        const response = await fetch(API_PATHS.QUIZ.GET_QUIZ);
         if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
         const data = await response.json();
         if (data && data.success && data.quiz) {
@@ -53,7 +54,7 @@ const Quiz = () => {
     };
 
     try {
-      const response = await fetch("https://quiz-app-imh9.onrender.com/quizzes/quiz-attempts", {
+      const response = await fetch(API_PATHS.QUIZ.QUIZ_SUBMIT , {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(attempt),

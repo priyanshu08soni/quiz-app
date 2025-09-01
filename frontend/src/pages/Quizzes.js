@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import { BookCopy } from "lucide-react";
 import QuizzesCard from "../components/QuizzesCard";
+import { API_PATHS } from "../utils";
 const Quizzes = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +12,7 @@ const Quizzes = () => {
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const response = await fetch("https://quiz-app-imh9.onrender.com/quizzes");
+        const response = await fetch(API_PATHS.QUIZ.GET_ALL_QUIZZES);
         if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
         const data = await response.json();
 

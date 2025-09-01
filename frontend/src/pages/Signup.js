@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Award } from 'lucide-react';
+import { API_PATHS } from '../utils';
 
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState({
@@ -36,7 +37,7 @@ const Signup = () => {
 
     setLoading(true); // 👈 start loading
     try {
-      const response = await fetch(`https://quiz-app-imh9.onrender.com/auth/signup`, {
+      const response = await fetch(API_PATHS.AUTH.REGISTER, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(signupInfo)
