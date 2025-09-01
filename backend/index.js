@@ -1,7 +1,9 @@
+const dotenv = require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv").config();
 const mongoose = require("mongoose");
+const connectDB = require("./config/db");
+
 const authRouter = require("./controllers/authController"); // Make sure this points to the correct file
 const quizRouter = require("./controllers/quizController");
 const app = express();
@@ -13,13 +15,14 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+// For passes whole request to mongoDB as it is( doesn't ignore outliers)
 mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGO_URL, () =>
-  console.log("DB is successfully connected")
-);
+
+connectDB();
 
 // Use middleware
 app.use(express.json());
+// For nested objects
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
