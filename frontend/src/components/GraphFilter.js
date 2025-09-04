@@ -36,7 +36,7 @@ export default function GraphFilter({ selectedGraph, setSelectedGraph, groupedAt
   return (
     <div className="relative">
       {/* Header */}
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-3 px-3">
         <BarChart3 className="w-5 h-5 text-blue-600" />
         <label className="text-sm font-semibold text-gray-900">Graph Selection</label>
       </div>

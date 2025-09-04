@@ -1,27 +1,19 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { Award } from 'lucide-react';
-import { API_PATHS } from '../utils';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Award } from "lucide-react";
+import { loginUser } from "../api/auth"; // 👈 imported
 
 const Login = () => {
-  const [loginInfo, setLoginInfo] = useState({
-    email: '',
-    password: ''
-  });
-
-  const [errors, setErrors] = useState({
-    email: '',
-    password: ''
-  });
-
-  const [loading, setLoading] = useState(false); // 👈 loading state
+  const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setLoginInfo(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    setLoginInfo((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleLogin = async (e) => {
@@ -29,39 +21,32 @@ const Login = () => {
     const { email, password } = loginInfo;
 
     if (!email || !password) {
-      toast.error('Email and password are required');
+      toast.error("Email and password are required");
       return;
     }
 
-    setLoading(true); // 👈 start loading
+    setLoading(true);
     try {
-      const response = await fetch(API_PATHS.AUTH.LOGIN, {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginInfo)
-      });
-
-      const result = await response.json();
-      const { success, message, field, jwtToken, name, userId, username } = result;
+      const { response, result } = await loginUser(loginInfo); // 👈 calling API
+      const { success, message, field, jwtToken, name, userId, username } =
+        result;
 
       if (response.ok && success) {
         toast.success(message);
-        localStorage.setItem('token', jwtToken);
-        localStorage.setItem('loggedInUser', name);
-        localStorage.setItem('userId', userId);
-        localStorage.setItem('username', username);
-        setTimeout(() => navigate('/'), 1000);
-      } 
-      else if (!success && field) {
-        setErrors(prev => ({ ...prev, [field]: message }));
-      } 
-      else {
-        toast.error(message || 'Login failed');
+        localStorage.setItem("token", jwtToken);
+        localStorage.setItem("loggedInUser", name);
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("username", username);
+        setTimeout(() => navigate("/"), 1000);
+      } else if (!success && field) {
+        setErrors((prev) => ({ ...prev, [field]: message }));
+      } else {
+        toast.error(message || "Login failed");
       }
     } catch (err) {
-      toast.error('An error occurred during login');
+      toast.error("An error occurred during login");
     } finally {
-      setLoading(false); // 👈 stop loading
+      setLoading(false);
     }
   };
 
@@ -75,8 +60,11 @@ const Login = () => {
           Sign in to your account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Or{' '}
-          <Link to="/signup" className="font-medium text-primary hover:text-primary/90">
+          Or{" "}
+          <Link
+            to="/signup"
+            className="font-medium text-primary hover:text-primary/90"
+          >
             create a new account
           </Link>
         </p>
@@ -87,7 +75,10 @@ const Login = () => {
           <form className="space-y-6" onSubmit={handleLogin}>
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <input
@@ -99,15 +90,20 @@ const Login = () => {
                 value={loginInfo.email}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
+                  errors.email ? "border-red-500" : "border-gray-300"
                 }`}
               />
-              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <input
@@ -119,10 +115,12 @@ const Login = () => {
                 value={loginInfo.password}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
+                  errors.password ? "border-red-500" : "border-gray-300"
                 }`}
               />
-              {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+              )}
             </div>
 
             {/* Submit */}
@@ -154,7 +152,7 @@ const Login = () => {
                     ></path>
                   </svg>
                 ) : (
-                  'Sign in'
+                  "Sign in"
                 )}
               </button>
             </div>

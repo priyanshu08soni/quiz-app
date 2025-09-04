@@ -1,69 +1,56 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { Award } from 'lucide-react';
-import { API_PATHS } from '../utils';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Award } from "lucide-react";
+import { signupUser } from "../api/auth"; // 👈 imported
 
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState({
-    name: '',
-    username: '',
-    email: '',
-    password: ''
+    name: "",
+    username: "",
+    email: "",
+    password: "",
   });
 
-  const [errors, setErrors] = useState({
-    username: '',
-    email: ''
-  });
-
-  const [loading, setLoading] = useState(false); // 👈 loading state
+  const [errors, setErrors] = useState({ username: "", email: "" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setSignupInfo(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    setSignupInfo((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSignup = async (e) => {
     e.preventDefault();
     const { name, username, email, password } = signupInfo;
-    
+
     if (!name || !username || !email || !password) {
-      toast.error('Name, Username, email and password are required');
+      toast.error("Name, Username, email and password are required");
       return;
     }
 
-    setLoading(true); // 👈 start loading
+    setLoading(true);
     try {
-      const response = await fetch(API_PATHS.AUTH.REGISTER, {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(signupInfo)
-      });
-
-      const result = await response.json();
+      const { response, result } = await signupUser(signupInfo); // 👈 using service
 
       if (response.ok) {
         toast.success(result.message);
-        setTimeout(() => navigate('/login'), 1000);
-      } 
-      else if (response.status === 409) {
-        if (result.message.toLowerCase().includes('email')) {
-          setErrors(prev => ({ ...prev, email: result.message }));
-        } else if (result.message.toLowerCase().includes('username')) {
-          setErrors(prev => ({ ...prev, username: result.message }));
+        setTimeout(() => navigate("/login"), 1000);
+      } else if (response.status === 409) {
+        if (result.message.toLowerCase().includes("email")) {
+          setErrors((prev) => ({ ...prev, email: result.message }));
+        } else if (result.message.toLowerCase().includes("username")) {
+          setErrors((prev) => ({ ...prev, username: result.message }));
         }
-      } 
-      else {
-        toast.error(result.message || 'Signup failed');
+      } else {
+        toast.error(result.message || "Signup failed");
       }
-
     } catch (err) {
-      toast.error('An error occurred during signup');
+      toast.error("An error occurred during signup");
     } finally {
-      setLoading(false); // 👈 stop loading
+      setLoading(false);
     }
   };
 
@@ -77,8 +64,11 @@ const Signup = () => {
           Create your account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Already have an account?{' '}
-          <Link to="/login" className="font-medium text-primary hover:text-primary/90">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-medium text-primary hover:text-primary/90"
+          >
             Sign in
           </Link>
         </p>
@@ -89,7 +79,10 @@ const Signup = () => {
           <form className="space-y-6" onSubmit={handleSignup}>
             {/* Name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Full Name
               </label>
               <input
@@ -106,7 +99,10 @@ const Signup = () => {
 
             {/* Username */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Username
               </label>
               <input
@@ -118,15 +114,20 @@ const Signup = () => {
                 value={signupInfo.username}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${
-                  errors.username ? 'border-red-500' : 'border-gray-300'
+                  errors.username ? "border-red-500" : "border-gray-300"
                 }`}
               />
-              {errors.username && <p className="mt-1 text-sm text-red-500">{errors.username}</p>}
+              {errors.username && (
+                <p className="mt-1 text-sm text-red-500">{errors.username}</p>
+              )}
             </div>
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <input
@@ -138,15 +139,20 @@ const Signup = () => {
                 value={signupInfo.email}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
+                  errors.email ? "border-red-500" : "border-gray-300"
                 }`}
               />
-              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <input
@@ -190,7 +196,7 @@ const Signup = () => {
                     ></path>
                   </svg>
                 ) : (
-                  'Sign up'
+                  "Sign up"
                 )}
               </button>
             </div>

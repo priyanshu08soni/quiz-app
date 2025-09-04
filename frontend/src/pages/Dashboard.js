@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { fetchAllQuizAttempts, fetchQuizAttemptDetails } from "../api/quizzes";
+
 import {
   BarChart,
   Bar,
@@ -19,7 +21,6 @@ import {
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import GraphFilter from "../components/GraphFilter";
-import { API_PATHS } from "../utils";
 
 const Dashboard = () => {
   const [attempts, setAttempts] = useState([]);
@@ -38,24 +39,21 @@ const Dashboard = () => {
 
   const handleQuizDetails = async (id) => {
     try {
-      const response = await fetch(API_PATHS.QUIZ.QUIZ_ATTEMPT);
-      if (!response.ok) throw new Error(`Fetching failed: ${response.status}`);
-      const result = await response.json();
+      const result = await fetchQuizAttemptDetails(id);
       navigate(`/quizzes/${id}/answers`, { state: { attempt: result } });
     } catch (err) {
       toast.error("Failed to fetch quiz");
     }
   };
-
+  
   useEffect(() => {
-    const fetchAttempts = async () => {
+    const loadAttempts = async () => {
       if (!userId) {
         toast.error("Please login to view your dashboard");
         return;
       }
       try {
-        const response = await fetch(API_PATHS.QUIZ.QUIZ_ATTEMPTS_ALL);
-        const data = await response.json();
+        const data = await fetchAllQuizAttempts(userId);
         setAttempts(data.attempts);
         setFilteredAttempts(data.attempts);
       } catch (error) {
@@ -65,8 +63,9 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-    fetchAttempts();
+    loadAttempts();
   }, [userId]);
+  
 
   useEffect(() => {
     let filtered = attempts.filter((attempt) =>

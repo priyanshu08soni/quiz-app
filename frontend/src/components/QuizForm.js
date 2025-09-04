@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Edit, PlusCircle, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { API_PATHS } from "../utils";
+import { createQuiz } from "../api/quizzes"; // ✅ use API
 
 const QuizForm = () => {
   const [title, setTitle] = useState("");
@@ -17,11 +17,16 @@ const QuizForm = () => {
 
   const addQuestion = () => {
     if (!questionText || choices.length < 2 || points <= 0) {
-      toast.error("Please enter a valid question, at least two choices, and points.");
+      toast.error(
+        "Please enter a valid question, at least two choices, and points."
+      );
       return;
     }
 
-    setQuestions([...questions, { questionText, choices, points: Number(points) }]);
+    setQuestions([
+      ...questions,
+      { questionText, choices, points: Number(points) },
+    ]);
     setQuestionText("");
     setChoices([{ text: "", isCorrect: false }]);
     setPoints("");
@@ -48,19 +53,15 @@ const QuizForm = () => {
   const handleQuizCreation = async (e) => {
     e.preventDefault();
     if (!title || !description || questions.length === 0) {
-      toast.error("Title, description, and at least one question are required.");
+      toast.error(
+        "Title, description, and at least one question are required."
+      );
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch(API_PATHS.QUIZ.CREATE_QUIZ, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, questions }),
-      });
-
-      const result = await response.json();
+      const result = await createQuiz({ title, description, questions });
       const { success, message } = result;
 
       if (success) {
@@ -69,8 +70,12 @@ const QuizForm = () => {
       } else {
         toast.error("Failed to create quiz: " + (message || "Unknown error"));
       }
-    } catch {
-      toast.error("An error occurred while creating the quiz!");
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while creating the quiz!"
+      );
     } finally {
       setLoading(false);
     }
@@ -122,17 +127,24 @@ const QuizForm = () => {
               placeholder={`Choice ${index + 1}`}
               className="border p-2 rounded w-full"
               value={choice.text}
-              onChange={(e) => updateChoice(index, e.target.value, choice.isCorrect)}
+              onChange={(e) =>
+                updateChoice(index, e.target.value, choice.isCorrect)
+              }
             />
             <input
               type="checkbox"
               checked={choice.isCorrect}
-              onChange={(e) => updateChoice(index, choice.text, e.target.checked)}
+              onChange={(e) =>
+                updateChoice(index, choice.text, e.target.checked)
+              }
             />
           </div>
         ))}
 
-        <button onClick={addChoice} className="text-primary flex items-center gap-1 mt-2">
+        <button
+          onClick={addChoice}
+          className="text-primary flex items-center gap-1 mt-2"
+        >
           <PlusCircle size={18} /> Add Choice
         </button>
 
@@ -197,7 +209,9 @@ const QuizForm = () => {
           onClick={handleQuizCreation}
           disabled={loading}
           className={`px-6 py-2 rounded-full text-white ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-primary hover:bg-primary/90"
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-primary hover:bg-primary/90"
           } transition`}
         >
           {loading ? "Creating Quiz..." : "Create Quiz"}
