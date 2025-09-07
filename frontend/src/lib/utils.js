@@ -1,4 +1,4 @@
-export const BASE_URL = "https://quiz-app-imh9.onrender.com";
+export const BASE_URL = "https://quiz-app-rho-snowy-39.vercel.app";
 export const API_PATHS = {
     AUTH:{
         REGISTER: `${BASE_URL}/auth/signup`,
