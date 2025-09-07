@@ -1,4 +1,4 @@
-import { API_PATHS } from "../utils";
+import { API_PATHS } from "../lib/utils";
 
 // 🔹 Login API
 export const loginUser = async (loginInfo) => {
